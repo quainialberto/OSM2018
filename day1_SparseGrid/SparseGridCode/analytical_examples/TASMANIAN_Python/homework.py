@@ -73,17 +73,17 @@ for i, n in enumerate(nvec):
     errvec[i] = max(np.fabs(aRes[:,0] - aTres))
     print(" For localp    Number of points: {0:1d}   Max. Error: {1:1.16e}".format(iNumP1, errvec[i]))
 
-
-
 plt.yscale('log')
 plt.xscale('log')
 plt.plot(nvec, errvec, 'bo')
 plt.xlabel('Number points')
 plt.ylabel('Max error')
+plt.show()
 plt.savefig('maxerror.png')
 
 plt.plot(aPoints[:,0], aPoints[:,1], 'bo')
 plt.xlabel('x')
 plt.ylabel('y')
 plt.title('Sparse grid')
+plt.show()
 plt.savefig('sparsegrid.png')

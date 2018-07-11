@@ -172,24 +172,24 @@ plt.xlabel('# Points')
 plt.ylabel('Max Error')
 plt.legend(loc = "upper right")
 plt.show()
-#plt.savefig('SG_approx.png')
-
+plt.savefig('SG_approx.png')
+plt.close()
 # Adaptive Sparse Grid with dimension 2 and 1 output and maximum refinement level 5, refinement criterion.
 iDim = 2
 iOut = 1
-fTol = 1.E-6
+fTol = 1.E-5
 which_basis = 1
 refinement_level = 5
 
-numPointsS, errorStoreS = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, oscillatory, c, w)
-numPointsS1, errorStoreS1 = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, gaussian, c, w)
-numPointsS2, errorStoreS2 = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, corner_peak, c, w)
+numPointsAS, errorStoreAS = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, oscillatory, c, w)
+numPointsAS1, errorStoreAS1 = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, gaussian, c, w)
+numPointsAS2, errorStoreAS2 = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, corner_peak, c, w)
 
 plt.yscale('log')
 plt.xscale('log')
-plt.plot(numPointsS, errorStoreS, 'bo', label = "oscillatory")
-plt.plot(numPointsS1, errorStoreS1, 'go', label = "gaussian")
-plt.plot(numPointsS2, errorStoreS2, 'ro', label = "corner peak")
+plt.plot(numPointsAS, errorStoreAS, 'bo', label = "oscillatory")
+plt.plot(numPointsAS1, errorStoreAS1, 'go', label = "gaussian")
+plt.plot(numPointsAS2, errorStoreAS2, 'ro', label = "corner peak")
 plt.title('Adaptive Sparse Grid Approximation')
 plt.xlabel('# Points')
 plt.ylabel('Max Error')

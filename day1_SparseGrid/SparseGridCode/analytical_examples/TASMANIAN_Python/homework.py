@@ -109,7 +109,7 @@ def adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, func, 
 
         aTres = np.empty([n,])
         for iI in range(n):
-            aTres[iI] = func(aPnts[iI], c, w, iDim-1)
+            aTres[iI] = func(aPnts[iI], c, w, iDim)
 
         # level of grid before refinement
         grid1.makeLocalPolynomialGrid(iDim, iOut, iDepth, which_basis, "localp")
@@ -117,7 +117,7 @@ def adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, func, 
         aPoints = grid1.getPoints()
         aVals = np.empty([aPoints.shape[0], 1])
         for iI in range(aPoints.shape[0]):
-            aVals[iI] = func(aPoints[iI], c, w, iDim-1)
+            aVals[iI] = func(aPoints[iI], c, w, iDim)
         grid1.loadNeededPoints(aVals)
 
         print("\n-------------------------------------------------------------------------------------------------")
@@ -140,7 +140,7 @@ def adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, func, 
             aPoints = grid1.getNeededPoints()
             aVals = np.empty([aPoints.shape[0], 1])
             for iI in range(aPoints.shape[0]):
-                aVals[iI] = func(aPoints[iI], c, w, iDim-1)
+                aVals[iI] = func(aPoints[iI], c, w, iDim)
             grid1.loadNeededPoints(aVals)
 
             aRes = grid1.evaluateBatch(aPnts)
@@ -151,7 +151,7 @@ def adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, func, 
 
             print(" {0:9d} {1:9d}  {2:1.2e}".format(iK+1, grid1.getNumPoints(), fError1))
 
-        return numPoints, errorStore
+    return numPoints, errorStore
 
 # Sparse Grid with dimension 2 and 1 output and refinement level 5
 iDim = 2
@@ -172,7 +172,7 @@ plt.xlabel('# Points')
 plt.ylabel('Max Error')
 plt.legend(loc = "upper right")
 plt.show()
-plt.savefig('SG_approx.png')
+#plt.savefig('SG_approx.png')
 
 # Adaptive Sparse Grid with dimension 2 and 1 output and maximum refinement level 5, refinement criterion.
 iDim = 2
@@ -184,13 +184,6 @@ refinement_level = 5
 numPointsS, errorStoreS = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, oscillatory, c, w)
 numPointsS1, errorStoreS1 = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, gaussian, c, w)
 numPointsS2, errorStoreS2 = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, corner_peak, c, w)
-
-print("numPointsS: ", numPointsS)
-print("numPointsS1: ", numPointsS1)
-print("numPointsS2", numPointsS2)
-print("errStoreS", errorStoreS)
-print("errStoreS1",  errorStoreS1)
-print("errStoreS2", errorStoreS2)
 
 plt.yscale('log')
 plt.xscale('log')

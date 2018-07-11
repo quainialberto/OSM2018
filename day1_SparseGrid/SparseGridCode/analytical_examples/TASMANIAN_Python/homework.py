@@ -41,7 +41,7 @@ def sparse_grid(iDim, iOut, which_bases, func, c, w):
 
     grid  = TasmanianSG.TasmanianSparseGrid()
 
-    depths  = np.arange(3, 8, 1)
+    depths  = np.arange(3, 10, 1)
     n = 1000
     errorStore = np.zeros(len(depths))
     numPoints = np.zeros(len(depths))

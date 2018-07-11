@@ -41,7 +41,7 @@ def sparse_grid(iDim, iOut, which_bases, func, c, w):
 
     grid  = TasmanianSG.TasmanianSparseGrid()
 
-    depths  = np.arange(3, 9, 1)
+    depths  = np.arange(3, 10, 1)
     n = 1000
     errorStore = np.zeros(len(depths))
     numPoints = np.zeros(len(depths))
@@ -160,14 +160,17 @@ which_basis = 1 #1= linear basis functions -> Check the manual for other options
 
 numPointsS, errorStoreS = sparse_grid(iDim, iOut, which_basis, oscillatory, c, w)
 numPointsS1, errorStoreS1 = sparse_grid(iDim, iOut, which_basis, gaussian, c, w)
+numPointsS2, errorStoresS2 = sparse_grid(iDim, iOut, which_basis, corner_peak, c, w)
 
 plt.xscale('log')
 plt.plot(numPointsS, errorStoreS, 'bo', label = "oscillatory")
 plt.plot(numPointsS1, errorStoreS1, 'go', label = "gaussian")
+plt.plot(numPointsS2, errorStoreS2, 'ro', label = "corner peak")
+plt.title('Sparse Grid Approximation')
 plt.xlabel('# Points')
 plt.ylabel('Max Error')
-plt.legend(loc = "lower left")
-plt.savefig('test1.png')
+plt.legend(loc = "upper right")
+plt.savefig('SG_approx.png')
 
 # Adaptive Sparse Grid with dimension 2 and 1 output and maximum refinement level 5, refinement criterion.
 iDim = 2
@@ -175,4 +178,19 @@ iOut = 1
 fTol = 1.E-5
 which_basis = 1
 refinement_level = 5
+
+numPointsS, errorStoreS = adaptive_sparse_grid(iDim, iOut, fTol, which_bases, refinement_level, oscillatory, c, w)
+numPointsS1, errorStoreS1 = adaptive_sparse_grid(iDim, iOut, fTol, which_bases, refinement_level, gaussian, c, w)
+numPointsS2, errorStoresS2 = adaptive_sparse_grid(iDim, iOut, fTol, which_bases, refinement_level, corner_peak, c, w)
+
+plt.xscale('log')
+plt.plot(numPointsS, errorStoreS, 'bo', label = "oscillatory")
+plt.plot(numPointsS1, errorStoreS1, 'go', label = "gaussian")
+plt.plot(numPointsS2, errorStoreS2, 'ro', label = "corner peak")
+plt.title('Adaptive Sparse Grid Approximation')
+plt.xlabel('# Points')
+plt.ylabel('Max Error')
+plt.legend(loc = "upper right")
+plt.savefig('adaptive_SG_approx.png')
+
 

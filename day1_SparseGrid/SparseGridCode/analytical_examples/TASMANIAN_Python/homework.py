@@ -1,89 +1,179 @@
-# necessary import for every use of TASMANIAN
-#
+# import statements
 import matplotlib
+# Force matplotlib to not use any Xwindows backend.
 matplotlib.use('Agg')
+
 import TasmanianSG
 import numpy as np
-
-# imports specifically needed by the examples
 import math
 from random import uniform
-from datetime import datetime
-
 import matplotlib.pyplot as plt
 
-print("TasmanianSG version: {0:s}".format(TasmanianSG.__version__))
-print("TasmanianSG license: {0:s}".format(TasmanianSG.__license__))
-
 grid  = TasmanianSG.TasmanianSparseGrid()
-grid1 = TasmanianSG.TasmanianSparseGrid()
-grid2 = TasmanianSG.TasmanianSparseGrid()
 
 #############################################################################
 
-# Oscillatory for OSM:
-# interpolate: f(x, y) = cos(2 * pi * w1 + c1 * x + c2 * y)
-# using piecewise linear basis functions.
+# Initialize Test Functions and Parameters
+c = np.array([-.1, .5])
+w = np.array([.1, .5])
+d = 2
 
-# set containers
-nvec = np.arange(10, 10000, 1000)
-errvec = np.zeros(len(nvec))
+def oscillatory(x, c, w, d):
+    innersum = 0
+    for ii in range(d):
+        innersum +=  c[d] * x[d]
+    return np.cos(2 * np.pi * w[0] + innersum)
 
-# set parameters w and c
-w = np.array([.5, .75])
-c = np.array([.5, .75])
+def gaussian(x, c, w, d):
+    innersum = 0
+    for ii in range(d):
+        innersum += c[d]**2 * (x[d] - w[d])**2
+    return np.exp(- innersum)
 
-# set function
+def corner_peak(x, c, w, d):
+    innersum = 0
+    for ii in range(d):
+        innersum +=  c[d] * x[d]
+    return (1 + innersum) ** -(d+1)
 
-for i, n in enumerate(nvec):
+# Sparse Grids
+def sparse_grid_test(iDim, iOut, which_bases, func, c, w):
 
-    # 1000 2-dimensional sample points
-    aPnts = np.empty([n, 2])
-    for iI in range(n):
-        for iJ in range(2):
-            aPnts[iI][iJ] = uniform(-1.0, 1.0)
+    grid  = TasmanianSG.TasmanianSparseGrid()
 
-    # Result
-    aTres = np.empty([n,])
-    for iI in range(n):
-        aTres[iI] = math.cos(2 * math.pi *  w[0] + aPnts[iI][0] * c[0] + aPnts[iI][1] * c[1])
+    depths  = np.arange(3, 9, 1)
+    n = 1000
+    errorStore = np.zeros(len(depths))
+    numPoints = np.zeros(len(depths))
 
-    # Sparse Grid with dimension 2 and 1 output and refinement level 5
-    iDim = 2
-    iOut = 1
-    iDepth = 5
-    which_basis = 1 #1= linear basis functions -> Check the manual for other options
+    for index, iDepth in enumerate(depths):
+        # n iDim-dimensional sample points
+        aPnts = np.empty((n, iDim))
+        for iI in range(n):
+            for iJ in range(2):
+                aPnts[iI][iJ] = uniform(-1.0, 1.0)
 
-    print("\n-------------------------------------------------------------------------------------------------")
-    print("Example 1 for OSM: interpolate f(x, y) = cos(2 * pi * w1 + c1 * x + c2 * y)")
-    print("       using fixed sparse grid with depth {0:1d}".format(iDepth))
-    print("       the error is estimated as the maximum from " + str(nvec[i]) + " random points\n")
+        # Result
+        aTres = np.empty([n,])
+        for iI in range(n):
+            aTres[iI] = func(aPnts[iI], c, w, iDim-1)
 
-    # construct sparse grid
-    grid.makeLocalPolynomialGrid(iDim, iOut, iDepth, which_basis, "localp")
-    aPoints = grid.getPoints()
-    iNumP1 = aPoints.shape[0]
-    aVals = np.empty([aPoints.shape[0], 1])
-    for iI in range(aPoints.shape[0]):
-        aVals[iI] = math.cos(2 * math.pi *  w[0] + aPoints[iI][0] * c[0] + aPoints[iI][1] * c[1])
-    grid.loadNeededPoints(aVals)
+        print("\n-------------------------------------------------------------------------------------------------")
+        if func == gaussian:
+            print("Test Function: interpolate function f(x,y) = exp( -sum_i c_i^2(x_i - w_i)^2 )")
+        if func == oscillatory:
+            print("Test Function: interpolate function f(x,y) = cos( 2 * pi * w_1 + sum_i c_i * x_i )")
+        if func == corner_peak:
+            print("Test Function: interpolate function f(x,y) = ( 1 + sum_i c_i * x_i )^(-3)")
+        print("using fixed sparse grid with depth {0:1d}".format(iDepth))
+        print("the error is estimated as the maximum from 1000 random points\n")
 
-    # compute the error
-    aRes = grid.evaluateBatch(aPnts)
-    errvec[i] = max(np.fabs(aRes[:,0] - aTres))
-    print(" For localp    Number of points: {0:1d}   Max. Error: {1:1.16e}".format(iNumP1, errvec[i]))
+        # Construct sparse grid
+        grid.makeLocalPolynomialGrid(iDim, iOut, iDepth, which_basis, "localp")
+        aPoints = grid.getPoints()
+        iNumP1 = aPoints.shape[0]
+        aVals = np.empty([aPoints.shape[0], 1])
+        for iI in range(aPoints.shape[0]):
+            aVals[iI] = func(aPoints[iI], c, w, iDim-1)
+        grid.loadNeededPoints(aVals)
 
-plt.yscale('log')
+        # compute the error
+        aRes = grid.evaluateBatch(aPnts)
+        errorStore[index] = max(np.fabs(aRes[:,0] - aTres))
+        numPoints[index] = iNumP1
+        print(" For localp    Number of points: {0:1d}   Max. Error: {1:1.16e}".format(iNumP1, errorStore[index]))
+
+        # write coordinates of grid to a text file
+
+    f=open("errors.txt", 'a')
+    np.savetxt(f,errorStore, fmt='% 2.16f')
+    f.close()
+
+    return numPoints, errorStore
+
+# Adaptive Sparse Grids
+def adap_sparse_grid_test(iDim, iOut, fTol, which_bases, refinement_level, func, c, w):
+
+    grid1  = TasmanianSG.TasmanianSparseGrid()
+    depths = np.arange(4, 10, 2)
+    errorStore = np.zeros(len(depths))
+    numPoints = np.zeros(len(depths))
+    n = 1000
+
+    for index, iDepth in enumerate(depths):
+
+        aPnts = np.empty([n, 2])
+        for iI in range(n):
+            for iJ in range(2):
+                aPnts[iI][iJ] = uniform(-1.0, 1.0)
+
+        aTres = np.empty([n,])
+        for iI in range(n-1):
+            aTres[iI] = func(aPnts[iI], c, w, iDim-1)
+
+        # level of grid before refinement
+        grid1.makeLocalPolynomialGrid(iDim, iOut, iDepth, which_basis, "localp")
+
+        aPoints = grid1.getPoints()
+        aVals = np.empty([aPoints.shape[0], 1])
+        for iI in range(aPoints.shape[0]-1):
+            aVals[iI] = func(aPnts[iI], c, w, iDim-1)
+        grid1.loadNeededPoints(aVals)
+
+        print("\n-------------------------------------------------------------------------------------------------")
+        if func == gaussian:
+            print("Test Function: interpolate function f(x,y) = exp( -sum_i c_i^2(x_i - w_i)^2 )")
+        if func == oscillatory:
+            print("Test Function: interpolate function f(x,y) = cos( 2 * pi * w_1 + sum_i c_i * x_i )")
+        if func == corner_peak:
+            print("Test Function: interpolate function f(x,y) = ( 1 + sum_i c_i * x_i )^(-3)")
+        print("   the error is estimated as the maximum from 1000 random points")
+        print("   tolerance is set at 1.E-5 and piecewise linear basis functions are used\n")
+
+        print("               Classic refinement ")
+        print(" refinement level         points     error   ")
+
+        #refinement level
+        for iK in range(refinement_level):
+
+            grid1.setSurplusRefinement(fTol, 1, "fds")   #also use fds, or other rules
+            aPoints = grid1.getNeededPoints()
+            aVals = np.empty([aPoints.shape[0], 1])
+            for iI in range(aPoints.shape[0]-1):
+                aVals[iI] = func(aPnts[iI], c, w, iDim-1)
+            grid1.loadNeededPoints(aVals)
+
+            aRes = grid1.evaluateBatch(aPnts)
+            fError1 = max(np.fabs(aRes[:,0] - aTres))
+
+            numPoints[index] = aPoints.shape[0]
+            errorStore[index] = fError1
+
+            print(" {0:9d} {1:9d}  {2:1.2e}".format(iK+1, grid1.getNumPoints(), fError1))
+
+        return numPoints, errorStore
+
+# Sparse Grid with dimension 2 and 1 output and refinement level 5
+iDim = 2
+iOut = 1
+which_basis = 1 #1= linear basis functions -> Check the manual for other options
+
+numPointsS, errorStoreS = sparse_grid_test(iDim, iOut, which_basis, oscillatory, c, w)
+numPointsS1, errorStoreS1 = sparse_grid_test(iDim, iOut, which_basis, gaussian, c, w)
+
 plt.xscale('log')
-plt.plot(nvec, errvec, 'bo')
-plt.xlabel('Number points')
-plt.ylabel('Max error')
-plt.show()
-plt.savefig('maxerror.png')
+plt.plot(numPointsS, errorStoreS, 'bo')
+plt.plot(numPointsS1, errorStoreS1, 'go')
+plt.xlabel('# Points')
+plt.ylabel('Max Error')
+plt.savefig('test1.png')
 
-plt.plot(aPoints[:,0], aPoints[:,1], 'bo')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title('Sparse grid')
-plt.show()
-plt.savefig('sparsegrid.png')
+# Adaptive Sparse Grid with dimension 2 and 1 output and maximum refinement level 5, refinement criterion.
+iDim = 2
+iOut = 1
+fTol = 1.E-5
+which_basis = 1
+refinement_level = 5
+
+#adap_sparse_grid_test(iDim, iOut, fTol, which_basis, refinement_level, oscillatory, c, w)
+#############################################################################

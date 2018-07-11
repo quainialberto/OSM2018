@@ -163,6 +163,7 @@ numPointsS1, errorStoreS1 = sparse_grid(iDim, iOut, which_basis, gaussian, c, w)
 numPointsS2, errorStoreS2 = sparse_grid(iDim, iOut, which_basis, corner_peak, c, w)
 
 plt.xscale('log')
+plt.yscale('log')
 plt.plot(numPointsS, errorStoreS, 'bo', label = "oscillatory")
 plt.plot(numPointsS1, errorStoreS1, 'go', label = "gaussian")
 plt.plot(numPointsS2, errorStoreS2, 'ro', label = "corner peak")

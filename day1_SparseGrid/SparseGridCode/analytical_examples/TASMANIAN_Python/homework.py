@@ -168,6 +168,9 @@ numPointsS2, errorStoreS2 = sparse_grid(iDim, iOut, which_basis, corner_peak, c,
 
 plt.xscale('log')
 plt.yscale('log')
+plt.plot(numPointsS, errorStoreS, color = 'b', label = "oscillatory")
+plt.plot(numPointsS1, errorStoreS1, color = 'g', label = "gaussian")
+plt.plot(numPointsS2, errorStoreS2, color = 'r', label = "corner peak")
 plt.plot(numPointsS, errorStoreS, 'bo', label = "oscillatory")
 plt.plot(numPointsS1, errorStoreS1, 'go', label = "gaussian")
 plt.plot(numPointsS2, errorStoreS2, 'ro', label = "corner peak")
@@ -190,6 +193,9 @@ numPointsAS2, errorStoreAS2 = adaptive_sparse_grid(iDim, iOut, fTol, which_basis
 
 plt.yscale('log')
 plt.xscale('log')
+plt.plot(numPointsAS, errorStoreAS, color = 'b', label = "oscillatory")
+plt.plot(numPointsAS1, errorStoreAS1, color = 'g', label = "gaussian")
+plt.plot(numPointsAS2, errorStoreAS2, color = 'r', label = "corner peak")
 plt.plot(numPointsAS, errorStoreAS, 'bo', label = "oscillatory")
 plt.plot(numPointsAS1, errorStoreAS1, 'go', label = "gaussian")
 plt.plot(numPointsAS2, errorStoreAS2, 'ro', label = "corner peak")

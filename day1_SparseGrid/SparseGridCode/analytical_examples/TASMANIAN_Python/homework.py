@@ -92,7 +92,7 @@ def sparse_grid(iDim, iOut, which_bases, func, c, w):
     return numPoints, errorStore
 
 # Adaptive Sparse Grids
-def adap_sparse_grid(iDim, iOut, fTol, which_bases, refinement_level, func, c, w):
+def adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, func, c, w):
 
     grid1  = TasmanianSG.TasmanianSparseGrid()
     depths = np.arange(4, 10, 2)
@@ -117,7 +117,7 @@ def adap_sparse_grid(iDim, iOut, fTol, which_bases, refinement_level, func, c, w
         aPoints = grid1.getPoints()
         aVals = np.empty([aPoints.shape[0], 1])
         for iI in range(aPoints.shape[0]-1):
-            aVals[iI] = func(aPnts[iI], c, w, iDim-1)
+            aVals[iI] = func(aPoints[iI], c, w, iDim-1)
         grid1.loadNeededPoints(aVals)
 
         print("\n-------------------------------------------------------------------------------------------------")
@@ -140,7 +140,7 @@ def adap_sparse_grid(iDim, iOut, fTol, which_bases, refinement_level, func, c, w
             aPoints = grid1.getNeededPoints()
             aVals = np.empty([aPoints.shape[0], 1])
             for iI in range(aPoints.shape[0]-1):
-                aVals[iI] = func(aPnts[iI], c, w, iDim-1)
+                aVals[iI] = func(aPoints[iI], c, w, iDim-1)
             grid1.loadNeededPoints(aVals)
 
             aRes = grid1.evaluateBatch(aPnts)
@@ -160,7 +160,7 @@ which_basis = 1 #1= linear basis functions -> Check the manual for other options
 
 numPointsS, errorStoreS = sparse_grid(iDim, iOut, which_basis, oscillatory, c, w)
 numPointsS1, errorStoreS1 = sparse_grid(iDim, iOut, which_basis, gaussian, c, w)
-numPointsS2, errorStoresS2 = sparse_grid(iDim, iOut, which_basis, corner_peak, c, w)
+numPointsS2, errorStoreS2 = sparse_grid(iDim, iOut, which_basis, corner_peak, c, w)
 
 plt.xscale('log')
 plt.plot(numPointsS, errorStoreS, 'bo', label = "oscillatory")
@@ -179,9 +179,9 @@ fTol = 1.E-5
 which_basis = 1
 refinement_level = 5
 
-numPointsS, errorStoreS = adaptive_sparse_grid(iDim, iOut, fTol, which_bases, refinement_level, oscillatory, c, w)
-numPointsS1, errorStoreS1 = adaptive_sparse_grid(iDim, iOut, fTol, which_bases, refinement_level, gaussian, c, w)
-numPointsS2, errorStoresS2 = adaptive_sparse_grid(iDim, iOut, fTol, which_bases, refinement_level, corner_peak, c, w)
+numPointsS, errorStoreS = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, oscillatory, c, w)
+numPointsS1, errorStoreS1 = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, gaussian, c, w)
+numPointsS2, errorStoreS2 = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, corner_peak, c, w)
 
 plt.xscale('log')
 plt.plot(numPointsS, errorStoreS, 'bo', label = "oscillatory")

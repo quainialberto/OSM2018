@@ -131,7 +131,7 @@ def adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, func, 
         print("   tolerance is set at 1.E-6 and piecewise linear basis functions are used\n")
 
         print("               Classic refinement ")
-        print(" refinement level         points     error   ")
+        print(" refinem lev   points    error   ")
 
         #refinement level
         for iK in range(refinement_level):
@@ -150,6 +150,10 @@ def adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, func, 
             errorStore[index] = fError1
 
             print(" {0:9d} {1:9d}  {2:1.2e}".format(iK+1, grid1.getNumPoints(), fError1))
+
+    f=open("errorsASG.txt", 'a')
+    np.savetxt(f,errorStore, fmt='% 2.16f')
+    f.close()
 
     return numPoints, errorStore
 
@@ -171,7 +175,6 @@ plt.title('Sparse Grid Approximation')
 plt.xlabel('# Points')
 plt.ylabel('Max Error')
 plt.legend(loc = "upper right")
-plt.show()
 plt.savefig('SG_approx.png')
 plt.close()
 # Adaptive Sparse Grid with dimension 2 and 1 output and maximum refinement level 5, refinement criterion.

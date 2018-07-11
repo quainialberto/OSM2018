@@ -20,20 +20,20 @@ d = 2
 
 def oscillatory(x, c, w, d):
     innersum = 0
-    for ii in range(d):
-        innersum +=  c[d] * x[d]
+    for iI in range(d):
+        innersum +=  c[iI] * x[iI]
     return np.cos(2 * np.pi * w[0] + innersum)
 
 def gaussian(x, c, w, d):
     innersum = 0
-    for ii in range(d):
-        innersum += c[d]**2 * (x[d] - w[d])**2
+    for iI in range(d):
+        innersum += c[iI]**2 * (x[iI] - w[iI])**2
     return np.exp(- innersum)
 
 def corner_peak(x, c, w, d):
     innersum = 0
-    for ii in range(d):
-        innersum +=  c[d] * x[d]
+    for iI in range(d):
+        innersum +=  c[iI] * x[iI]
     return (1 + innersum) ** -(d+1)
 
 # Sparse Grids
@@ -56,7 +56,7 @@ def sparse_grid(iDim, iOut, which_bases, func, c, w):
         # Result
         aTres = np.empty([n,])
         for iI in range(n):
-            aTres[iI] = func(aPnts[iI], c, w, iDim-1)
+            aTres[iI] = func(aPnts[iI], c, w, iDim)
 
         print("\n-------------------------------------------------------------------------------------------------")
         if func == gaussian:
@@ -74,7 +74,7 @@ def sparse_grid(iDim, iOut, which_bases, func, c, w):
         iNumP1 = aPoints.shape[0]
         aVals = np.empty([aPoints.shape[0], 1])
         for iI in range(aPoints.shape[0]):
-            aVals[iI] = func(aPoints[iI], c, w, iDim-1)
+            aVals[iI] = func(aPoints[iI], c, w, iDim)
         grid.loadNeededPoints(aVals)
 
         # compute the error
@@ -95,7 +95,7 @@ def sparse_grid(iDim, iOut, which_bases, func, c, w):
 def adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, func, c, w):
 
     grid1  = TasmanianSG.TasmanianSparseGrid()
-    depths = np.arange(4, 10, 2)
+    depths = np.arange(3, 10, 1)
     errorStore = np.zeros(len(depths))
     numPoints = np.zeros(len(depths))
     n = 1000
@@ -108,7 +108,7 @@ def adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, func, 
                 aPnts[iI][iJ] = uniform(-1.0, 1.0)
 
         aTres = np.empty([n,])
-        for iI in range(n-1):
+        for iI in range(n):
             aTres[iI] = func(aPnts[iI], c, w, iDim-1)
 
         # level of grid before refinement
@@ -128,7 +128,7 @@ def adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, func, 
         if func == corner_peak:
             print("Test Function: interpolate function f(x,y) = ( 1 + sum_i c_i * x_i )^(-3)")
         print("   the error is estimated as the maximum from 1000 random points")
-        print("   tolerance is set at 1.E-5 and piecewise linear basis functions are used\n")
+        print("   tolerance is set at 1.E-6 and piecewise linear basis functions are used\n")
 
         print("               Classic refinement ")
         print(" refinement level         points     error   ")
@@ -158,32 +158,39 @@ iDim = 2
 iOut = 1
 which_basis = 1 #1= linear basis functions -> Check the manual for other options
 
-#numPointsS, errorStoreS = sparse_grid(iDim, iOut, which_basis, oscillatory, c, w)
-#numPointsS1, errorStoreS1 = sparse_grid(iDim, iOut, which_basis, gaussian, c, w)
-#numPointsS2, errorStoreS2 = sparse_grid(iDim, iOut, which_basis, corner_peak, c, w)
+numPointsS, errorStoreS = sparse_grid(iDim, iOut, which_basis, oscillatory, c, w)
+numPointsS1, errorStoreS1 = sparse_grid(iDim, iOut, which_basis, gaussian, c, w)
+numPointsS2, errorStoreS2 = sparse_grid(iDim, iOut, which_basis, corner_peak, c, w)
 
-#plt.xscale('log')
-#plt.yscale('log')
-#plt.plot(numPointsS, errorStoreS, 'bo', label = "oscillatory")
-#plt.plot(numPointsS1, errorStoreS1, 'go', label = "gaussian")
-#plt.plot(numPointsS2, errorStoreS2, 'ro', label = "corner peak")
-#plt.title('Sparse Grid Approximation')
-#plt.xlabel('# Points')
-#plt.ylabel('Max Error')
-#plt.legend(loc = "upper right")
-#plt.show()
-#plt.savefig('SG_approx.png')
+plt.xscale('log')
+plt.yscale('log')
+plt.plot(numPointsS, errorStoreS, 'bo', label = "oscillatory")
+plt.plot(numPointsS1, errorStoreS1, 'go', label = "gaussian")
+plt.plot(numPointsS2, errorStoreS2, 'ro', label = "corner peak")
+plt.title('Sparse Grid Approximation')
+plt.xlabel('# Points')
+plt.ylabel('Max Error')
+plt.legend(loc = "upper right")
+plt.show()
+plt.savefig('SG_approx.png')
 
 # Adaptive Sparse Grid with dimension 2 and 1 output and maximum refinement level 5, refinement criterion.
 iDim = 2
 iOut = 1
-fTol = 1.E-5
+fTol = 1.E-6
 which_basis = 1
 refinement_level = 5
 
 numPointsS, errorStoreS = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, oscillatory, c, w)
 numPointsS1, errorStoreS1 = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, gaussian, c, w)
 numPointsS2, errorStoreS2 = adaptive_sparse_grid(iDim, iOut, fTol, which_basis, refinement_level, corner_peak, c, w)
+
+print("numPointsS: ", numPointsS)
+print("numPointsS1: ", numPointsS1)
+print("numPointsS2", numPointsS2)
+print("errStoreS", errorStoreS)
+print("errStoreS1",  errorStoreS1)
+print("errStoreS2", errorStoreS2)
 
 plt.yscale('log')
 plt.xscale('log')

@@ -37,7 +37,7 @@ def corner_peak(x, c, w, d):
     return (1 + innersum) ** -(d+1)
 
 # Sparse Grids
-def sparse_grid_test(iDim, iOut, which_bases, func, c, w):
+def sparse_grid(iDim, iOut, which_bases, func, c, w):
 
     grid  = TasmanianSG.TasmanianSparseGrid()
 
@@ -92,7 +92,7 @@ def sparse_grid_test(iDim, iOut, which_bases, func, c, w):
     return numPoints, errorStore
 
 # Adaptive Sparse Grids
-def adap_sparse_grid_test(iDim, iOut, fTol, which_bases, refinement_level, func, c, w):
+def adap_sparse_grid(iDim, iOut, fTol, which_bases, refinement_level, func, c, w):
 
     grid1  = TasmanianSG.TasmanianSparseGrid()
     depths = np.arange(4, 10, 2)
@@ -158,14 +158,15 @@ iDim = 2
 iOut = 1
 which_basis = 1 #1= linear basis functions -> Check the manual for other options
 
-numPointsS, errorStoreS = sparse_grid_test(iDim, iOut, which_basis, oscillatory, c, w)
-numPointsS1, errorStoreS1 = sparse_grid_test(iDim, iOut, which_basis, gaussian, c, w)
+numPointsS, errorStoreS = sparse_grid(iDim, iOut, which_basis, oscillatory, c, w)
+numPointsS1, errorStoreS1 = sparse_grid(iDim, iOut, which_basis, gaussian, c, w)
 
 plt.xscale('log')
-plt.plot(numPointsS, errorStoreS, 'bo')
-plt.plot(numPointsS1, errorStoreS1, 'go')
+plt.plot(numPointsS, errorStoreS, 'bo', label = "oscillatory")
+plt.plot(numPointsS1, errorStoreS1, 'go', label = "gaussian")
 plt.xlabel('# Points')
 plt.ylabel('Max Error')
+plt.legend(loc = "lower left")
 plt.savefig('test1.png')
 
 # Adaptive Sparse Grid with dimension 2 and 1 output and maximum refinement level 5, refinement criterion.
@@ -175,5 +176,3 @@ fTol = 1.E-5
 which_basis = 1
 refinement_level = 5
 
-#adap_sparse_grid_test(iDim, iOut, fTol, which_basis, refinement_level, oscillatory, c, w)
-#############################################################################

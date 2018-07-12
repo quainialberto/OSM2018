@@ -14,8 +14,8 @@ grid  = TasmanianSG.TasmanianSparseGrid()
 #############################################################################
 
 # Initialize Test Functions and Parameters
-c = np.array([-.1, .5])
-w = np.array([.1, .5])
+c = np.array([.1, .5])
+w = np.array([-.1, .5])
 d = 2
 
 def oscillatory(x, c, w, d):

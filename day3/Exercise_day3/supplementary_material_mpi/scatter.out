@@ -1,0 +1,11 @@
+-----BEFORE SCATTER-----
+node 0 has elements: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+
+-----AFTER SCATTER-----
+rank 0 has values: 0 1 2 
+rank 1 has values: 3 4 5 
+rank 2 has values: 6 7 8 
+rank 3 has values: 9 10 11 
+rank 4 has values: 12 13 14 
+rank 5 has values: 15 16 17 
+rank 6 has values: 18 19 

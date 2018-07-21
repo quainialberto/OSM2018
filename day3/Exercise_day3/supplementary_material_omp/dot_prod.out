@@ -1,0 +1,48 @@
+dot of two 100000000-dimensional vectors computed with 2 threads
+the resulting dot product of 2500000025000000 matches the expected value
+computation took 0.400222 seconds
+--------------------------------
+
+dot of two 100000000-dimensional vectors computed with 4 threads
+the resulting dot product of 2500000025000000 matches the expected value
+computation took 0.206320 seconds
+--------------------------------
+
+dot of two 100000000-dimensional vectors computed with 6 threads
+the resulting dot product of 2500000025000000 matches the expected value
+computation took 0.141745 seconds
+--------------------------------
+
+dot of two 100000000-dimensional vectors computed with 8 threads
+the resulting dot product of 2500000025000000 matches the expected value
+computation took 0.109977 seconds
+--------------------------------
+
+Amdahl's law: if code is not entirely parallelized,
+marginal speedup decreases as number of processors increases.
+--------------------------------
+--------------------------------
+--------------------------------
+--------------------------------
+
+dot of two 100000-dimensional vectors computed with 8 threads
+the resulting dot product of 2500025000 matches the expected value
+computation took 0.000114 seconds
+--------------------------------
+
+dot of two 1000000-dimensional vectors computed with 8 threads
+the resulting dot product of 250000250000 matches the expected value
+computation took 0.001049 seconds
+--------------------------------
+
+dot of two 10000000-dimensional vectors computed with 8 threads
+the resulting dot product of 25000002500000 matches the expected value
+computation took 0.010858 seconds
+--------------------------------
+
+dot of two 100000000-dimensional vectors computed with 8 threads
+the resulting dot product of 2500000025000000 matches the expected value
+computation took 0.107700 seconds
+--------------------------------
+
+speedup increases linearly with the dimensionality of the problem.

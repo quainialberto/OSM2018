@@ -1,20 +1,20 @@
 #!/bin/bash
-# a sample job submission script to submit an OpenMP job to the sandyb 
-# partition on Midway1 please change the --partition option if you want to use 
+# a sample job submission script to submit an OpenMP job to the sandyb
+# partition on Midway1 please change the --partition option if you want to use
 # another partition on Midway1
 
 # set the job name to hello-openmp
-#SBATCH --job-name=hello-openmp
+#SBATCH --job-name=integration-pi
 
 # send output to hello-openmp.out
-#SBATCH --output=hello-openmp.out
+#SBATCH --output=par_integration_pi.out
 
 # this job requests node
-#SBATCH --ntasks=8
+#SBATCH --ntasks=1
 
 
 # and request 8 cpus per task for OpenMP threads
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=8
 
 # this job will run in the sandyb partition on Midway1
 #SBATCH --partition=sandyb

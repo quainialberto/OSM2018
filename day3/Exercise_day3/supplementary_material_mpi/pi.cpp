@@ -5,10 +5,9 @@
 
 int main(int argc, char *argv[])
 {
-    const int niter = 1e8;
-    double x=0., y=0.;
+    const int niter = 1e9;
+    double x=0., y=0., pi=0.;
     int rank, size, count_root, count=0;
-    double pi=0.;
     
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);

@@ -30,14 +30,12 @@ int main(int argc, char *argv[])
     // displs starts from 0 and move by 1+20/size each time
     int offset=0;
     for (int i=0; i<rmd; i++) {
-        //displs[i] = i*(1+20/size);
         displs[i] = offset;
         recvcounts[i] = 1+20/size;
         offset += recvcounts[i];
     }
     // fill displs and recvcounts from remainder to size
     for (int j=rmd; j<size; j++) {
-        //displs[j] = rmd + j*20/size;
         displs[j] = offset;
         recvcounts[j] = 20/size;
         offset += recvcounts[j];
@@ -55,14 +53,9 @@ int main(int argc, char *argv[])
         }
         printf("\n\n-----AFTER SCATTER-----\n");
     }
-    // set rcvcounts
-    //int rcvcount = 20/size;
-    // set rcv array
-    //int rcv[rcvcount];
     
     MPI_Barrier(MPI_COMM_WORLD);
     /* scatter the value of 'send' of rank 0 to recv of all ranks */
-    //MPI_Scatter(&snd, rcvcount, MPI_INT, &rcv, rcvcount, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Scatterv(&snd, recvcounts, displs, MPI_INT, rcv, 20, MPI_INT, 0, MPI_COMM_WORLD);
 
     printf("rank %i has values: ", rank);

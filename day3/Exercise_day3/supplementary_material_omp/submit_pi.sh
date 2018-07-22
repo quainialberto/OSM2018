@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=pi
-#SBATCH --output=pi.out
+#SBATCH --output=pi4.out
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --partition=sandyb

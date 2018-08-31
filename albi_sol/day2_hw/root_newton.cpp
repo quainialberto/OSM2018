@@ -1,14 +1,12 @@
 #include <stdio.h>
 #include <cmath>
 
-using namespace std;
-
-int main()
+int main (void)
 {
     printf("Root finder for cos(x)-x\n");
     printf("------------------------\n");
-    double x_old=0.0, x_new=0.0, tol=0.0;
-    int N=0, i=0;
+    double x_old {0.0}, x_new {0.0}, tol {0.0};
+    unsigned N {0}, i {0};
     printf("Insert an initial guess x0: ");
     scanf("%lf", &x_old);
     printf("Insert the maximal number of iterations: ");
@@ -25,6 +23,6 @@ int main()
     } while (i < N && dist > tol);
     
     printf("The root of f(x)=cos(x)-x is: %lf", x_new);
+    
     return 0;
-
 }

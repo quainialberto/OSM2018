@@ -1,16 +1,13 @@
-#include <iostream>
+#include <stdio.h>
 #include <string>
 
-using namespace std;
-
-int main()
+int main (void)
 {
-    //string name = "";
+    //string name {""};
     //cout << "Insert your name: ";
     //getline(cin, name);
-    string name = "albi";
-    cout << "Hello " << name << ", how are you?" << endl;
+    const std::string name {"albi"};
+    printf("Hello %s, how are you? ", name.c_str());
 
     return 0;
-
 }

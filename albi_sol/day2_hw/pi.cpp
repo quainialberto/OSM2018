@@ -1,24 +1,23 @@
 #include <stdio.h>
 #include <time.h>
 
-using namespace std;
-
-static long num_steps = 1e8; 
-
-int 
-main ()
+int main (void)
 {
-    clock_t stime=clock();
-    double x = 0.0, sum = 0.0, step = 1.0/double(num_steps);
+    clock_t stime {-clock()};
+    const unsigned num_steps {int(1e8)}; 
+    const double step {1.0/double(num_steps)};
+    double x {0.0}, pi {0.0};
 
-    for (int i=0; i<num_steps; i++)
+    for (unsigned i=0; i<num_steps; ++i)
     {
-        x = (i + 0.5) * step;
-        sum += 4.0 / (1.0 + x*x);
+        x = (i + 0.5)*step;
+        pi += 4.0/(1.0 + x*x);
     }
-    double pi = step * sum;
+    pi *= step;
     
-    printf("Pi is approximately: %1.6f\n", pi);
-    printf("Execution time: %1.6fs\n", double((clock() - stime)/CLOCKS_PER_SEC ));
+    stime += clock();
+    printf( "Pi is approximately: %lf\n", pi );
+    printf( "Execution time: %lfs\n", (double)stime/CLOCKS_PER_SEC );
+    
     return 0;
 }

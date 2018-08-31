@@ -1,13 +1,13 @@
-#include <iostream>
+#include <stdio.h>
 
-int main()
+int main (void)
 {
-    double f = 0.4 / 100;
-    double p = 100;
-    double speed = 1 / (f + (1 - f) / p);
-    std::cout << "Number of CPU: " << p << std::endl;
-    std::cout << "Serial code fraction: " << f << std::endl;
-    std::cout << "The speed-up is: " << speed  << std::endl;
+    const double f = 0.4 / 100;
+    const unsigned short p = 100;
+    const double speed = 1.0 / (f + (1.0 - f) / double(p));
+    printf("Number of CPU: %u\n", p);
+    printf("Serial code fraction: %lf\n", f);
+    printf("The speed-up is: %lf", speed);
 
     return 0;
 }

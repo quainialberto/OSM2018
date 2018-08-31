@@ -1,29 +1,26 @@
 #include <stdio.h>
 #include <omp.h>
 
-using namespace std;
-static long num_steps = 1e2; 
-
-int 
-main ()
+int main (void)
 {
-    double sum = 0.0;
-    double step = 1.0/double(num_steps);
-    double time = -omp_get_wtime();
+    double time {-omp_get_wtime()};
+    const unsigned num_steps {int(1e8)};
+    const double step {1.0/double(num_steps)};
+    double x {0.0}, pi {0.0};
     
     #pragma omp parallel for reduction(+:sum)
-    for (int i=0; i<num_steps; i++) {
-
-        double x = (i + 0.5) * step;
-        sum += 4.0 / (1.0 + x*x);
+    for (unsigned i=0; i<num_steps; i++) 
+    {
+        x = (double(i) + 0.5) * step;
+        pi += 4.0 / (1.0 + x*x);
         //printf("Iteration %d Thread %d\n", i, omp_get_thread_num());
     }
 
-    double pi = step * sum;
+    pi *= step;
     time += omp_get_wtime();
 
-    printf("Pi is approximately: %1.6f\n", pi);
-    printf("Execution time: %1.6f\n", time);
+    printf("Pi is approximately: %lf\n", pi);
+    printf("Execution time: %lf\n", time);
     
     return 0;
 }
